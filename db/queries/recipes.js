@@ -78,3 +78,26 @@ export async function assignRecipeToBoard(recipeId, boardId) {
     [recipeId, boardId]
   );
 }
+
+export async function getRecipesByBoard(boardId, userId) {
+  const sql = `
+    SELECT r.*
+    FROM recipes r
+    JOIN recipe_boards rb ON r.id = rb.recipe_id
+    JOIN boards b ON rb.board_id = b.id
+    WHERE b.id = $1 AND b.user_id = $2
+    ORDER BY r.created_at DESC
+  `;
+  const { rows: recipes } = await db.query(sql, [boardId, userId]);
+  return recipes;
+} 
+
+export async function removeRecipeFromBoard(recipeId, boardId) {
+  const sql = `
+    DELETE FROM recipe_boards
+    WHERE recipe_id = $1 AND board_id = $2
+    RETURNING *
+  `;
+  const { rows: [entry] } = await db.query(sql, [recipeId, boardId]);
+  return entry;
+}

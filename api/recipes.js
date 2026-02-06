@@ -32,7 +32,7 @@ router.post("/", async (req, res) => {
   // Assign to whatver boards they want!
   if (boards && boards.length > 0) {
     for (let boardId of boards) {
-      await assignRecipeToBoard(recipe.id, boardId);  // You'll create this function
+      await assignRecipeToBoard(recipe.id, boardId);
     }
   }
   
@@ -91,5 +91,7 @@ router.post("/import", async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 });   
+
+
 
 export default router;

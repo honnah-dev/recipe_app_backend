@@ -8,6 +8,8 @@ import getUserFromToken from "#middleware/getUserFromToken";
 import handlePostgresErrors from "#middleware/handlePostgresErrors";
 import cors from "cors";
 import morgan from "morgan";
+import boardsRouter from "#api/boards";  
+
 
 app.use(cors({ origin: process.env.CORS_ORIGIN ?? /localhost/ }));
 
@@ -22,6 +24,7 @@ app.get("/", (req, res) => res.send("Hello, World!"));
 
 app.use("/auth", authRouter);
 app.use("/recipes", recipesRouter);
+app.use("/boards", boardsRouter);
 
 app.use(handlePostgresErrors);
 app.use((err, req, res, next) => {

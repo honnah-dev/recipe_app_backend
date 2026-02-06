@@ -174,14 +174,35 @@ function parseInstructions(instructions) {
   // 1. Array of strings: ["Mix flour", "Bake"]
   // 2. Array of objects: [{ "@type": "HowToStep", "text": "Mix flour" }]
   
-  return instructions.map(step => {
-    // If it's an object with a 'text' property, extract it
-    if (typeof step === 'object' && step.text) {
-      return step.text;
+  // Flatten nested sections (HowToSection contains itemListElement)
+  const flattenedSteps = [];
+
+  for (const step of instructions) {
+    if (typeof step === 'string') {
+      flattenedSteps.push(step);
+    } else if (typeof step === 'object' && step !== null) {
+      // Check if it's a HowToSection with nested steps
+      if (step.itemListElement && Array.isArray(step.itemListElement)) {
+        // Add section name as a header if it exists
+        if (step.name) {
+          flattenedSteps.push(`**${step.name}**`);
+        }
+        // Add all nested steps
+        for (const nestedStep of step.itemListElement) {
+          if (typeof nestedStep === 'string') {
+            flattenedSteps.push(nestedStep);
+          } else if (nestedStep.text) {
+            flattenedSteps.push(nestedStep.text);
+          }
+        }
+      } else {
+        // Regular HowToStep - extract text
+        flattenedSteps.push(step.text || step.name || '');
+      }
     }
-    // Otherwise it's already a string
-    return step;
-  }).filter(step => step && step.trim());
+  }
+
+  return flattenedSteps.filter(step => typeof step === 'string' && step.trim());
 }
 
 

@@ -1,6 +1,6 @@
 import express from "express";
 const router = express.Router();
-export default router;
+
 
 import { createUser, getUserByEmailAndPassword } from "#db/queries/users";
 import requireBody from "#middleware/requireBody";
@@ -26,3 +26,6 @@ router
     const token = createToken({ id: user.id });
     res.json({ token, user: { id: user.id, username: user.username, email: user.email } });
   });
+
+
+  export default router;
