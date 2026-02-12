@@ -1,0 +1,87 @@
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#e8f4f8', 'primaryBorderColor': '#0ea5e9', 'lineColor': '#64748b', 'secondaryColor': '#f0fdf4', 'tertiaryColor': '#fef3c7'}}}%%
+
+flowchart TB
+    subgraph Frontend["Frontend (React)"]
+        LoginForm["Login Form"]
+        RegisterForm["Register Form"]
+        AuthContext["AuthContext Provider"]
+        SessionStorage["sessionStorage"]
+        Navbar["Navbar Component"]
+        ProtectedPages["Protected Pages"]
+    end
+
+    subgraph Backend["Backend (Express.js)"]
+        subgraph Middleware["Middleware Layer"]
+            RequireBody["requireBody\n(validates username/password)"]
+            GetUserFromToken["getUserFromToken\n(extracts JWT from header)"]
+            RequireUser["requireUser\n(guards protected routes)"]
+        end
+
+        subgraph AuthEndpoints["Auth Endpoints"]
+            RegisterEndpoint["POST /users/register"]
+            LoginEndpoint["POST /users/login"]
+        end
+
+        subgraph ProtectedEndpoints["Protected Endpoints"]
+            RecipesAPI["Recipes API"]
+            BoardsAPI["Boards API"]
+        end
+
+        subgraph Utils["Utilities"]
+            JWTUtils["jwt.js\n(createToken / verifyToken)"]
+            BcryptHash["bcrypt\n(hash / compare)"]
+        end
+    end
+
+    subgraph Database["PostgreSQL Database"]
+        UsersTable["users table\n(id, username, email, password_hash)"]
+    end
+
+    %% Registration Flow
+    RegisterForm -->|"1. Submit credentials"| RegisterEndpoint
+    RegisterEndpoint -->|"2. Validate fields"| RequireBody
+    RequireBody -->|"3. Hash password"| BcryptHash
+    BcryptHash -->|"4. INSERT user"| UsersTable
+    UsersTable -->|"5. Return user"| JWTUtils
+    JWTUtils -->|"6. Sign JWT (7 days)"| RegisterEndpoint
+    RegisterEndpoint -->|"7. Return token"| AuthContext
+    AuthContext -->|"8. Store token"| SessionStorage
+
+    %% Login Flow
+    LoginForm -->|"1. Submit credentials"| LoginEndpoint
+    LoginEndpoint -->|"2. Validate fields"| RequireBody
+    RequireBody -->|"3. SELECT user by username"| UsersTable
+    UsersTable -->|"4. Compare password"| BcryptHash
+    BcryptHash -->|"5. If valid"| JWTUtils
+    JWTUtils -->|"6. Sign JWT (7 days)"| LoginEndpoint
+    LoginEndpoint -->|"7. Return token"| AuthContext
+    AuthContext -->|"8. Store token"| SessionStorage
+
+    %% Protected Request Flow
+    ProtectedPages -->|"1. Request with\nAuthorization: Bearer token"| GetUserFromToken
+    GetUserFromToken -->|"2. Verify JWT"| JWTUtils
+    JWTUtils -->|"3. Get user by ID"| UsersTable
+    UsersTable -->|"4. Attach req.user"| RequireUser
+    RequireUser -->|"5. Allow access"| RecipesAPI
+    RequireUser -->|"5. Allow access"| BoardsAPI
+    RecipesAPI -->|"6. Return data"| ProtectedPages
+    BoardsAPI -->|"6. Return data"| ProtectedPages
+
+    %% Logout Flow (client-side only)
+    Navbar -->|"Logout: Clear token"| AuthContext
+    AuthContext -->|"Remove from storage"| SessionStorage
+
+    %% Token Check on Load
+    SessionStorage -.->|"On app load:\nRehydrate token"| AuthContext
+    AuthContext -.->|"Update UI state"| Navbar
+
+    %% Styling
+    classDef frontend fill:#e0f2fe,stroke:#0284c7,stroke-width:2px
+    classDef backend fill:#f0fdf4,stroke:#16a34a,stroke-width:2px
+    classDef database fill:#fef3c7,stroke:#d97706,stroke-width:2px
+    classDef middleware fill:#fce7f3,stroke:#db2777,stroke-width:2px
+
+    class LoginForm,RegisterForm,AuthContext,SessionStorage,Navbar,ProtectedPages frontend
+    class RegisterEndpoint,LoginEndpoint,RecipesAPI,BoardsAPI,JWTUtils,BcryptHash backend
+    class RequireBody,GetUserFromToken,RequireUser middleware
+    class UsersTable database

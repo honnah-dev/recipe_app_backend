@@ -100,10 +100,7 @@ function parseTime(duration) {
   // PT1H30M = 90 minutes
   // PT2H = 120 minutes
   
-  // TODO: Parse the duration string
-  // Hint: Use regex to extract hours (H) and minutes (M)
-  // Example regex: /PT(?:(\d+)H)?(?:(\d+)M)?/
-  
+  // Use regex to extract hours (H) and minutes (M) from the ISO 8601 duration string
   const match = duration.match(/PT(?:(\d+)H)?(?:(\d+)M)?/);
   if (!match) return null;
   
@@ -155,7 +152,7 @@ function parseIngredients(ingredients) {
   // ["2 cups flour", "1 egg"]
   // So we just return them as-is!
   
-  return ingredients.filter(ing => ing && ing.trim());
+  return ingredients.filter(ingredient => ingredient && ingredient.trim());
 }
 
 

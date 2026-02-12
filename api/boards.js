@@ -1,11 +1,9 @@
 import express from 'express';
 const router = express.Router();
 
-
-import { createBoard, getAllUserBoards, getBoardById, updateBoard, deleteBoard  } from '#db/queries/boards';
+import { createBoard, getAllUserBoards, getBoardById, updateBoard, deleteBoard } from '#db/queries/boards';
 import requireUser from '#middleware/requireUser';
 import { getRecipesByBoard, removeRecipeFromBoard } from '#db/queries/recipes';
-
 
 router.use(requireUser);
 

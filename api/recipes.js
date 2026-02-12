@@ -5,7 +5,6 @@ import { getAllUserRecipes, getRecipeById, createRecipe, updateRecipe, deleteRec
 import requireUser from '#middleware/requireUser';
 import { extractRecipeFromUrl } from '#utils/recipeParser';
 
-
 router.use(requireUser);
 
 router.post("/", async (req, res) => {
@@ -29,7 +28,7 @@ router.post("/", async (req, res) => {
     instructions
   );
   
-  // Assign to whatver boards they want!
+  // Assign to whatever boards the user selected
   if (boards && boards.length > 0) {
     for (let boardId of boards) {
       await assignRecipeToBoard(recipe.id, boardId);
@@ -38,9 +37,6 @@ router.post("/", async (req, res) => {
   
   res.status(201).json(recipe);
 });
-
-
-
 
 
 router.get("/", async (req, res) => {
@@ -90,8 +86,6 @@ router.post("/import", async (req, res) => {
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
-});   
-
-
+});
 
 export default router;

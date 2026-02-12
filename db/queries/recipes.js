@@ -74,7 +74,7 @@ export async function assignRecipeToBoard(recipeId, boardId) {
   await db.query(
     `INSERT INTO recipe_boards (recipe_id, board_id)
      VALUES ($1, $2)
-     ON CONFLICT DO NOTHING`,  // honnah- this prevents duplicates
+     ON CONFLICT DO NOTHING`,  // Prevents duplicate recipe-board assignments
     [recipeId, boardId]
   );
 }
