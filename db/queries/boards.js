@@ -13,7 +13,15 @@ export async function createBoard(userId, name) {
 
 export async function getAllUserBoards(userId) {
   const sql = `
-SELECT id, name, created_at
+SELECT id, name, created_at,
+  (
+    SELECT recipes.image_url
+    FROM recipe_boards
+    JOIN recipes ON recipes.id = recipe_boards.recipe_id
+    WHERE recipe_boards.board_id = boards.id
+    ORDER BY recipe_boards.added_at ASC
+    LIMIT 1
+  ) AS image_url
 FROM boards
 WHERE user_id = $1
 ORDER BY created_at DESC
