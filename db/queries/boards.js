@@ -7,11 +7,11 @@ export async function createBoard(userId, name) {
     RETURNING *
   `;
   const { rows: [board] } = await db.query(sql, [userId, name]);
-  return board;   
-
+  return board;
 }
 
 export async function getAllUserBoards(userId) {
+  // Subquery grabs the first recipe's image as a board cover
   const sql = `
 SELECT id, name, created_at,
   (

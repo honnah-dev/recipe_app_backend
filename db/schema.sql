@@ -1,3 +1,10 @@
+-- SCHEMA - Defines all 4 database tables and their relationships.
+-- users: stores accounts (password is hashed, never plain text)
+-- boards: folders/collections that belong to a user
+-- recipes: saved recipes that belong to a user (ingredients + instructions stored as JSONB arrays)
+-- recipe_boards: join table for the many-to-many relationship between recipes and boards
+-- Drop order matters! Tables with foreign keys must be dropped before the tables they reference.
+
 DROP TABLE IF EXISTS recipe_boards;
 DROP TABLE IF EXISTS recipes;
 DROP TABLE IF EXISTS boards;

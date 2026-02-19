@@ -2,7 +2,7 @@ import pg from "pg";
 
 const options = { connectionString: process.env.DATABASE_URL };
 
-// Need SSL for external database connection
+// SSL required for hosted databases (e.g. Render)
 if (process.env.NODE_ENV === "production") {
   options.ssl = { rejectUnauthorized: false };
 }

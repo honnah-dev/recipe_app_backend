@@ -13,8 +13,6 @@ router.post("/", async (req, res) => {
     prepTime, cookTime, servings, ingredients, instructions,
     boards  
   } = req.body;
-  
-  // Create recipe
   const recipe = await createRecipe(
     req.user.id,
     title,
@@ -28,7 +26,6 @@ router.post("/", async (req, res) => {
     instructions
   );
   
-  // Assign to whatever boards the user selected
   if (boards && boards.length > 0) {
     for (let boardId of boards) {
       await assignRecipeToBoard(recipe.id, boardId);

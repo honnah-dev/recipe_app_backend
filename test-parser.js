@@ -1,5 +1,3 @@
-// Test the actual recipeParser.js module
-
 import { extractRecipeFromUrl } from './utils/recipeParser.js';
 
 const url = 'https://sallysbakingaddiction.com/christmas-sugar-cookies/';

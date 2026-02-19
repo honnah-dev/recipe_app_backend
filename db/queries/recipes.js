@@ -14,7 +14,7 @@ export async function createRecipe(userId, title, description, sourceUrl, imageU
     JSON.stringify(instructions)
   ]);
   return recipe;
-} 
+}
 
 export async function getAllUserRecipes(userId) {
   const sql = `
@@ -74,7 +74,7 @@ export async function assignRecipeToBoard(recipeId, boardId) {
   await db.query(
     `INSERT INTO recipe_boards (recipe_id, board_id)
      VALUES ($1, $2)
-     ON CONFLICT DO NOTHING`,  // Prevents duplicate recipe-board assignments
+     ON CONFLICT DO NOTHING`,
     [recipeId, boardId]
   );
 }
@@ -90,7 +90,7 @@ export async function getRecipesByBoard(boardId, userId) {
   `;
   const { rows: recipes } = await db.query(sql, [boardId, userId]);
   return recipes;
-} 
+}
 
 export async function removeRecipeFromBoard(recipeId, boardId) {
   const sql = `
